@@ -7,7 +7,6 @@
   - `assets/index-dashboard.png` (메인 대시보드)
   - `assets/chart-sim.png` (차트/분할매수 시뮬레이션)
   - `assets/ai-portfolio.png` (AI 포트폴리오 결과)
-  - `assets/intro.png` (starship 인트로)
 
 ### Screenshots
 ![메인 대시보드](assets/index-dashboard.png)

@@ -6,7 +6,6 @@
 ![메인 대시보드](assets/index-dashboard.png)
 ![차트/시뮬레이션](assets/chart-sim.png)
 ![AI 포트폴리오](assets/ai-portfolio.png)
-![인트로](assets/intro.png)
 
 ## 핵심 기능
 - 실시간 자산 대시보드: 주요 지수/금/채권/비트코인/환율 변동 표시

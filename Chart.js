@@ -1,4 +1,8 @@
-const API_KEY = "5Q66YJ7ES1QLXWZL";
+const API_KEY_STORAGE = "ALPHAVANTAGE_API_KEY";
+
+function getAlphaVantageKey() {
+  return localStorage.getItem(API_KEY_STORAGE) || "";
+}
 let chart, allDates = [], allPrices = [], currentSymbol = "", currentRange = "1y";
 
 const simState = {
@@ -12,7 +16,12 @@ const simState = {
 
 // ====== Alpha Vantage 주가 불러오기 ======
 async function fetchData(symbol) {
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+  const apiKey = getAlphaVantageKey();
+  if (!apiKey) {
+    alert("Alpha Vantage API 키가 없습니다. localStorage의 ALPHAVANTAGE_API_KEY에 키를 저장하세요.");
+    return;
+  }
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${apiKey}`;
   const res = await fetch(url);
   const data = await res.json();
   const key = Object.keys(data).find(k => k.toLowerCase().includes("time series"));
@@ -169,7 +178,10 @@ document.getElementById("investment-form").addEventListener("submit", (e) => {
 
 // ====== 평균 환율 계산 ======
 async function computeAverageFx(fxStartISO, fxEndISO) {
-  const url = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=KRW&outputsize=full&apikey=${API_KEY}`;
+  const apiKey = getAlphaVantageKey();
+  if (!apiKey) throw new Error("Alpha Vantage API 키가 없습니다. localStorage의 ALPHAVANTAGE_API_KEY에 키를 저장하세요.");
+
+  const url = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=KRW&outputsize=full&apikey=${apiKey}`;
   const res = await fetch(url);
   const data = await res.json();
   const series = data["Time Series FX (Daily)"];

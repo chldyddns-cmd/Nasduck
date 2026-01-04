@@ -25,6 +25,14 @@
 1. `index.html`을 브라우저로 열면 실행됩니다.
 2. 차트/시뮬레이션/AI 추천은 외부 API 호출이 필요합니다.
 
+## Alpha Vantage API 키 설정 (로컬 전용)
+이 프로젝트는 보안을 위해 **API 키를 저장하지 않습니다.**
+
+브라우저 콘솔에서 아래처럼 키를 저장하면 대시보드/차트/환율 기능이 동작합니다.
+```
+localStorage.setItem("ALPHAVANTAGE_API_KEY", "YOUR_ALPHA_VANTAGE_API_KEY");
+```
+
 ## OpenAI API 키 설정 (로컬 전용)
 이 프로젝트는 보안을 위해 **API 키를 저장하지 않습니다.**
 

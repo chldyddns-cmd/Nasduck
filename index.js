@@ -4,7 +4,11 @@ $(function() {
   });
 });
 
-const API_KEY = "5Q66YJ7ES1QLXWZL";
+const API_KEY_STORAGE = "ALPHAVANTAGE_API_KEY";
+
+function getAlphaVantageKey() {
+  return localStorage.getItem(API_KEY_STORAGE) || "";
+}
 const RATE_DELAY = 15000;
 
 const assets = [
@@ -35,11 +39,14 @@ assets.forEach(asset => {
 async function fetchAsset(asset) {
   const now = new Date();
   try {
+    const apiKey = getAlphaVantageKey();
+    if (!apiKey) throw new Error("API 키 없음");
+
     const card = document.getElementById(`price-${asset.name}`).closest(".asset-card");
     card.classList.remove("up", "down");
 
     if (asset.fx) {
-      const fxRes = await fetch(`https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${asset.from}&to_symbol=${asset.to}&apikey=${API_KEY}`);
+      const fxRes = await fetch(`https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${asset.from}&to_symbol=${asset.to}&apikey=${apiKey}`);
       const fxData = await fxRes.json();
       const ts = fxData["Time Series FX (Daily)"];
       if (!ts) throw new Error("FX 데이터 없음");
@@ -62,7 +69,7 @@ async function fetchAsset(asset) {
       return;
     }
 
-    const res = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${asset.symbol}&apikey=${API_KEY}`);
+    const res = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${asset.symbol}&apikey=${apiKey}`);
     const data = await res.json();
     const q = data["Global Quote"];
     if (!q) throw new Error("데이터 없음");
@@ -77,8 +84,9 @@ async function fetchAsset(asset) {
     document.getElementById(`change-${asset.name}`).textContent  = `변동: ${up ? "+" : ""}${change}`;
     document.getElementById(`percent-${asset.name}`).textContent = `등락률: ${up ? "+" : ""}${percent}`;
     document.getElementById(`update-${asset.name}`).textContent  = `갱신: ${now.toLocaleTimeString("ko-KR",{hour12:false})}`;
-  } catch {
-    document.getElementById(`update-${asset.name}`).textContent = "데이터 오류";
+  } catch (err) {
+    const msg = err?.message === "API 키 없음" ? "API 키 없음" : "데이터 오류";
+    document.getElementById(`update-${asset.name}`).textContent = msg;
   }
 }
 

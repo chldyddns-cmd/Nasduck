@@ -2,12 +2,6 @@
 
 주식/자산 대시보드, 분할매수 시뮬레이션, AI 포트폴리오 추천을 제공하는 학습용 웹 프로젝트입니다.
 
-## Demo / Screenshots
-- 스크린샷은 `assets/` 폴더에 넣고, 아래 파일명으로 추가하면 README에 바로 표시됩니다.
-  - `assets/index-dashboard.png` (메인 대시보드)
-  - `assets/chart-sim.png` (차트/분할매수 시뮬레이션)
-  - `assets/ai-portfolio.png` (AI 포트폴리오 결과)
-
 ### Screenshots
 ![메인 대시보드](assets/index-dashboard.png)
 ![차트/시뮬레이션](assets/chart-sim.png)

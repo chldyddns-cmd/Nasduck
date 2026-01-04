@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>NasDuck — AI 포트폴리오 추천</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ===== 헤더 ===== -->
+  <header>
+    <div class="container">
+      <div class="container-small">
+        <a href="index.html" class="headA">
+          <img src="image/nasduck.png" alt="NasDuck 로고" width="45" height="45" decoding="async" />
+        </a>
+      </div>
+      <nav class="headB">
+        <ul>
+          <li><a href="index.html">메인</a></li>
+          <li><a href="Chart.html">모의 투자</a></li>
+          <li><a href="AI Reco.html">AI 포트폴리오</a></li>
+          <li><a href="index.html">소개</a></li>
+          <li><a href="index.html">문의</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== 메인 ===== -->
+  <main>
+    <section class="ai-section">
+      <h1>AI 기반 포트폴리오 추천</h1>
+
+      <form id="portfolio-form" class="ai-form">
+        <table class="ai-table">
+          <tr>
+            <th>나이</th>
+            <td><input type="number" id="age" min="18" max="100" required /></td>
+          </tr>
+          <tr>
+            <th>관심 분야</th>
+            <td>
+              <select id="interest" required>
+                <option value="">선택</option>
+                <option value="기술">기술</option>
+                <option value="소비자 서비스">소비자 서비스</option>
+                <option value="헬스케어">헬스케어</option>
+                <option value="금융">금융</option>
+                <option value="산업">산업</option>
+                <option value="자원 및 에너지">자원 및 에너지</option>
+                <option value="소비재">소비재</option>
+                <option value="통신 서비스">통신 서비스</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>시드 금액 (₩)</th>
+            <td><input type="number" id="seed" min="100000" step="100000" required /></td>
+          </tr>
+          <tr>
+            <th>월 투자 가능 금액 (₩)</th>
+            <td><input type="number" id="monthly" min="50000" step="50000" required /></td>
+          </tr>
+          <tr>
+            <th>투자 성향</th>
+            <td>
+              <select id="risk" required>
+                <option value="보수적">보수적</option>
+                <option value="중립">중립</option>
+                <option value="공격적">공격적</option>
+                <option value="도박">도박</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <button type="submit" class="ai-submit">추천 포트폴리오 생성</button>
+      </form>
+
+      <div id="loading" class="ai-loading" style="display:none;">AI가 포트폴리오를 분석 중입니다...</div>
+      <div id="result" class="ai-result"></div>
+    </section>
+  </main>
+
+  <!-- ===== 푸터 ===== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer__brand">
+        <img src="image/nasduck.png" alt="" width="120" height="120" />
+      </div>
+      <small class="footer__copy">© 2025 NasDuck. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- ===== 외부 스크립트 ===== -->
+  <script src="AI Reco.js"></script>
+</body>
+</html>

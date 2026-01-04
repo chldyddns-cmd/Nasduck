@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>NasDuck — 분할매수 시뮬레이션</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- ===== 헤더 ===== -->
+  <header>
+    <div class="container">
+      <div class="container-small">
+        <a href="index.html" class="headA">
+          <img src="image/nasduck.png" alt="NasDuck 로고" width="50" height="50" decoding="async" />
+        </a>
+      </div>
+      <nav class="headB">
+        <ul>
+          <li><a href="index.html">메인</a></li>
+          <li><a href="Chart.html">모의 투자</a></li>
+          <li><a href="AI Reco.html">AI 포트폴리오</a></li>
+          <li><a href="index.html">소개</a></li>
+          <li><a href="index.html">문의</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== 메인 ===== -->
+  <main class="sim-wrapper">
+
+    <!-- 왼쪽: 주식 차트 -->
+    <section class="chart-section">
+      <h2>주식 차트 조회</h2>
+      <form id="form">
+        <input type="text" id="ticker" placeholder="예: AAPL, TSLA, NVDA" required />
+        <button type="submit">조회</button>
+      </form>
+
+      <div id="range-buttons">
+        <button data-range="1y" class="active">1년</button>
+        <button data-range="2y">2년</button>
+        <button data-range="3y">3년</button>
+        <button data-range="4y">4년</button>
+        <button data-range="5y">5년</button>
+        <button data-range="max">전체</button>
+      </div>
+
+      <div id="chart-container">
+        <canvas id="chart"></canvas>
+      </div>
+    </section>
+
+    <!-- 오른쪽: 시뮬레이션 -->
+    <section class="right-panel">
+
+      <!-- 시뮬레이션 입력 + 환율 -->
+      <div class="sim-input-box">
+        <h2>분할매수 시뮬레이션</h2>
+        <form id="investment-form" class="sim-form">
+          <label>분할매수 주기:
+            <select id="interval">
+              <option value="daily">매일</option>
+              <option value="weekly">매주</option>
+              <option value="monthly">매달</option>
+            </select>
+          </label>
+
+          <div id="weekday-row" class="hidden">
+            <label>매주 요일:
+              <select id="weekday">
+                <option value="1">월요일</option>
+                <option value="2">화요일</option>
+                <option value="3">수요일</option>
+                <option value="4">목요일</option>
+                <option value="5">금요일</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="monthday-row" class="hidden">
+            <label>매달 투자일:
+              <select id="monthday"></select>
+            </label>
+          </div>
+
+          <label>시작일: <input type="date" id="start-date" required></label>
+          <label>종료일: <input type="date" id="end-date" required></label>
+          <label>투자금액(달러): <input type="number" id="investment" min="1" value="100" required></label>
+
+          <button type="submit" class="sim-btn">시뮬레이션 실행</button>
+        </form>
+
+        <div class="exchange-box">
+          <h3>평균 환율 계산기 (USD → KRW)</h3>
+          <button type="button" id="fx-btn" class="sim-btn">평균 환율 계산</button>
+          <p id="fx-result">평균 환율: —</p>
+          <button type="button" id="apply-fx" class="sim-btn">환율 적용</button>
+        </div>
+      </div>
+
+      <!-- 결과 -->
+      <div class="sim-result">
+        <h3>시뮬레이션 결과</h3>
+        <p><strong>총 투자금액:</strong> <span id="res-total-invest">—</span> <span id="res-total-invest-krw" class="fx-value">—</span></p>
+        <p><strong>총 매수 주식 수:</strong> <span id="res-total-shares">—</span></p>
+        <p><strong>현재 평가금액:</strong> <span id="res-current-value">—</span> <span id="res-current-value-krw" class="fx-value">—</span></p>
+        <p><strong>수익금:</strong> <span id="res-profit">—</span> <span id="res-profit-krw" class="fx-value">—</span></p>
+        <p><strong>수익률:</strong> <span id="res-profit-rate">—</span> <span id="res-profit-rate-krw" class="fx-value">—</span></p>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer__brand">
+        <img src="image/nasduck.png" alt="" width="120" height="120" aria-hidden="true" />
+      </div>
+      <small class="footer__copy">© 2025 NasDuck. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- 분리된 스크립트 -->
+  <script src="Chart.js"></script>
+</body>
+</html>

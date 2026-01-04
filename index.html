@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>NasDuck — 실시간 자산 대시보드</title>
+
+<!-- 새 창(세션)마다 starship.html로 이동 -->
+<script>
+  if (!sessionStorage.getItem('hasVisited')) {
+    sessionStorage.setItem('hasVisited', 'true');
+    window.location.href = 'starship.html';
+  }
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ===== 헤더 ===== -->
+  <header>
+    <div class="container">
+      <div class="container-small">
+        <a href="index.html" class="headA">
+          <img src="image/nasduck.png" alt="NasDuck 로고" />
+        </a>
+      </div>
+      <nav class="headB">
+        <ul>
+          <li><a href="index.html">메인</a></li>
+          <li><a href="Chart.html">모의 투자</a></li>
+          <li><a href="AI Reco.html">AI 포트폴리오</a></li>
+          <li><a href="index.html">소개</a></li>
+          <li><a href="index.html">문의</a></li>
+        </ul>
+      </nav>
+      <div class="headC">☰</div>
+    </div>
+  </header>
+
+  <!-- ===== 실시간 자산 대시보드 ===== -->
+  <main>
+    <section class="hero">
+      <h1 class="hero-title">실시간 자산 대시보드</h1>
+      <div class="dashboard" id="dashboard"></div>
+    </section>
+  </main>
+
+  <!-- ===== 사이트 소개 ===== -->
+  <section class="about-site">
+    <div class="container">
+      <img src="image/nasduck.png" alt="NasDuck 로고" class="about-logo" />
+      <h2>NasDuck 소개</h2>
+      <p>
+        NasDuck은 데이터 기반의 투자 결정을 지원하는 웹 플랫폼입니다.<br>
+        실시간 자산 대시보드, 분할매수 시뮬레이션, 그리고 AI 포트폴리오 추천 기능을 통해<br>
+        사용자 여러분께서는 시장 변동에 따른 자산 추이를 즉시 파악하고,
+        객관적인 데이터를 기반으로 자신에게 맞는 투자 전략을 설계하실 수 있습니다.
+      </p>
+      <p>
+        NasDuck은 복잡한 금융 정보를 단순하고 명확하게 전달하여,
+        모든 사용자가 근거 있는 수치를 바탕으로 합리적인 판단을 내릴 수 있도록 설계되었습니다.<br>
+        본 웹사이트는 학습 및 연구 목적을 위해 개발되었으며,
+        실제 투자 결정 및 그 결과에 대한 책임은 사용자 본인에게 있습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== 푸터 ===== -->
+  <footer>
+    <div class="container footer-layout">
+      <div class="footA">
+        <h2>NasDuck</h2>
+        <p>데이터 기반 투자 시뮬레이션 플랫폼<br><a href="#">https://nasduck.net</a></p>
+        <nav class="footD">
+          <ul>
+            <li><a href="#"><span class="fa fa-twitter" title="Twitter"></span></a></li>
+            <li><a href="#"><span class="fa fa-facebook" title="Facebook"></span></a></li>
+            <li><a href="#"><span class="fa fa-youtube" title="YouTube"></span></a></li>
+            <li><a href="#"><span class="fa fa-github" title="GitHub"></span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <nav class="footB">
+        <div>
+          <h3>ABOUT</h3>
+          <ul>
+            <li><a href="index.html">프로젝트 개요</a></li>
+            <li><a href="#">기능 설명</a></li>
+            <li><a href="#">개발자 정보</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>SUPPORT</h3>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">문의</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="footC">© 2025 NasDuck. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- ===== 메인 스크립트 분리 ===== -->
+  <script src="index.js"></script>
+</body>
+</html>

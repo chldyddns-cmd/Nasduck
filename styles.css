@@ -1,0 +1,343 @@
+@charset "UTF-8";
+
+/* ============================================================= */
+/* 기본 변수 */
+/* ============================================================= */
+:root {
+  --brand: #5aa9ff;
+  --brand-dark: #2477d3;
+  --bg: #f8fafc;
+  --text: #222;
+  --muted: #666;
+  --radius: 14px;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --max-width: 1280px;
+}
+
+/* ============================================================= */
+/* 기본 구조 */
+/* ============================================================= */
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ============================================================= */
+/* 헤더 */
+/* ============================================================= */
+header {
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 100px;
+  box-sizing: border-box;
+}
+
+.headA img { height: 200px; width: auto; }
+
+.headB ul {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.headB a {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+.headB a:hover { background: rgba(90,169,255,0.1); color: var(--brand-dark); }
+.headB a.active { color: var(--brand-dark); font-weight: 700; }
+
+/* ============================================================= */
+/* 메인: 실시간 자산 대시보드 */
+/* ============================================================= */
+.hero {
+  text-align: center;
+  padding: 80px 20px 120px;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f7ff 100%);
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--brand-dark);
+  margin-bottom: 40px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.asset-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 20px 22px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.asset-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+
+.asset-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.asset-price { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.asset-change { font-size: 15px; color: var(--muted); }
+.update-time { font-size: 13px; color: #888; margin-top: 6px; }
+
+.asset-card.up, .asset-card.up * { color: #d32f2f !important; }
+.asset-card.down, .asset-card.down * { color: #1976d2 !important; }
+
+/* ============================================================= */
+/* 분할매수 시뮬레이션 */
+/* ============================================================= */
+.sim-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px 20px 80px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.chart-section, .right-panel {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.chart-section { flex: 1; }
+.right-panel { flex: 0 0 380px; }
+
+#chart-container { width: 100%; height: 400px; margin-top: 20px; }
+
+.sim-form label { display: block; margin-bottom: 10px; }
+.sim-btn {
+  background: var(--brand);
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 6px;
+}
+.sim-btn:hover { background: var(--brand-dark); }
+
+.hidden { display: none !important; }
+.fx-value { color: var(--brand-dark); font-weight: 600; margin-left: 6px; }
+
+/* ============================================================= */
+/* AI 포트폴리오 추천 */
+/* ============================================================= */
+.ai-section {
+  max-width: 800px;
+  margin: 80px auto;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 40px 30px 60px;
+  text-align: center;
+}
+
+.ai-section h1 {
+  color: var(--brand-dark);
+  font-size: 26px;
+  margin-bottom: 30px;
+}
+
+.ai-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.ai-table th, .ai-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.ai-table th {
+  width: 35%;
+  color: var(--brand-dark);
+  font-weight: 600;
+}
+.ai-table input, .ai-table select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  font-size: 15px;
+}
+
+.ai-submit {
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.ai-submit:hover { background: var(--brand-dark); }
+
+.ai-loading {
+  font-size: 16px;
+  color: var(--brand-dark);
+  margin-top: 20px;
+  font-weight: 500;
+}
+.ai-result {
+  text-align: left;
+  background: #fdfdfd;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 20px;
+}
+.result-table th, .result-table td {
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 8px 10px;
+  text-align: left;
+}
+.result-table th {
+  background: #f1f6ff;
+  color: var(--brand-dark);
+  font-weight: 600;
+}
+
+/* ============================================================= */
+/* 소개 섹션 */
+/* ============================================================= */
+.about-site {
+  background: #fff;
+  padding: 100px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.about-site h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 30px;
+  color: var(--brand-dark);
+  margin-bottom: 20px;
+}
+.about-site p {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* ============================================================= */
+/* 푸터 (가로형 복원) */
+/* ============================================================= */
+footer {
+  background-color: #2477d3;
+  color: #fff;
+  padding: 60px 20px;
+}
+
+.footer-layout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.footA {
+  flex: 0 0 40%;
+}
+.footB {
+  flex: 0 0 55%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.footA h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+.footA a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footB h3 {
+  font-size: 14px;
+  border-bottom: 1px solid currentColor;
+  margin-bottom: 10px;
+}
+.footB ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.footB a {
+  color: inherit;
+  font-size: 13px;
+  text-decoration: none;
+  display: block;
+  padding: 4px 0;
+}
+.footB a:hover { text-decoration: underline; }
+
+.footD ul {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+}
+.footD a {
+  color: inherit;
+  border: 1px solid currentColor;
+  width: 2em;
+  line-height: 2em;
+  border-radius: 50%;
+  text-align: center;
+  margin-right: 8px;
+}
+
+.footC {
+  flex: 0 0 100%;
+  text-align: center;
+  font-size: 12px;
+  margin-top: 40px;
+}

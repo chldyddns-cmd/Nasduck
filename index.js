@@ -11,6 +11,78 @@ function getAlphaVantageKey() {
 }
 const RATE_DELAY = 15000;
 
+function hashToUnit(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return h / 4294967296;
+}
+
+function formatSigned(n, digits = 2) {
+  const num = Number(n);
+  const sign = num >= 0 ? "+" : "";
+  return `${sign}${num.toFixed(digits)}`;
+}
+
+function renderAsset(asset, { priceText, changeText, percentText, updateText, up }) {
+  const priceEl = document.getElementById(`price-${asset.name}`);
+  const changeEl = document.getElementById(`change-${asset.name}`);
+  const percentEl = document.getElementById(`percent-${asset.name}`);
+  const updateEl = document.getElementById(`update-${asset.name}`);
+  const card = priceEl?.closest(".asset-card");
+
+  if (card) {
+    card.classList.remove("up", "down");
+    if (typeof up === "boolean") card.classList.add(up ? "up" : "down");
+  }
+  if (priceEl) priceEl.textContent = priceText;
+  if (changeEl) changeEl.textContent = changeText;
+  if (percentEl) percentEl.textContent = percentText;
+  if (updateEl) updateEl.textContent = updateText;
+}
+
+function renderDemoAsset(asset, now, reason = "데모") {
+  const t = Date.now() / 600000; // 10분 단위로 천천히 변동
+  const seed = hashToUnit(asset.name) * Math.PI * 2;
+  const waveNow = Math.sin(t + seed);
+  const wavePrev = Math.sin((t - 1) + seed);
+
+  const baseBySymbol = {
+    SPY: 485.32,
+    QQQ: 412.87,
+    GLD: 187.56,
+    TLT: 95.12,
+    BTCUSD: 43850.0
+  };
+
+  const volPctBySymbol = {
+    SPY: 0.35,
+    QQQ: 0.5,
+    GLD: 0.25,
+    TLT: 0.2,
+    BTCUSD: 1.8,
+    FX: 0.12
+  };
+
+  const base = asset.fx ? 1328.4 : (baseBySymbol[asset.symbol] ?? 100);
+  const volPct = asset.fx ? volPctBySymbol.FX : (volPctBySymbol[asset.symbol] ?? 0.4);
+
+  const current = base * (1 + (waveNow * volPct) / 100);
+  const prev = base * (1 + (wavePrev * volPct) / 100);
+  const change = current - prev;
+  const percent = (change / prev) * 100;
+  const up = change >= 0;
+
+  renderAsset(asset, {
+    priceText: asset.fx ? `환율: ${current.toFixed(2)}` : `가격: $${current.toFixed(2)}`,
+    changeText: `변동: ${formatSigned(change, 2)}`,
+    percentText: `등락률: ${formatSigned(percent, 2)}%`,
+    updateText: `갱신: ${now.toLocaleTimeString("ko-KR", { hour12: false })} (${reason})`,
+    up
+  });
+}
+
 const assets = [
   { name: "S&P 500 (SPY)", symbol: "SPY", link: "https://finviz.com/map.ashx" },
   { name: "NASDAQ (QQQ)", symbol: "QQQ", link: "https://www.nasdaq.com/market-activity/indexes" },
@@ -40,7 +112,10 @@ async function fetchAsset(asset) {
   const now = new Date();
   try {
     const apiKey = getAlphaVantageKey();
-    if (!apiKey) throw new Error("API 키 없음");
+    if (!apiKey) {
+      renderDemoAsset(asset, now);
+      return;
+    }
 
     const card = document.getElementById(`price-${asset.name}`).closest(".asset-card");
     card.classList.remove("up", "down");
@@ -84,9 +159,8 @@ async function fetchAsset(asset) {
     document.getElementById(`change-${asset.name}`).textContent  = `변동: ${up ? "+" : ""}${change}`;
     document.getElementById(`percent-${asset.name}`).textContent = `등락률: ${up ? "+" : ""}${percent}`;
     document.getElementById(`update-${asset.name}`).textContent  = `갱신: ${now.toLocaleTimeString("ko-KR",{hour12:false})}`;
-  } catch (err) {
-    const msg = err?.message === "API 키 없음" ? "API 키 없음" : "데이터 오류";
-    document.getElementById(`update-${asset.name}`).textContent = msg;
+  } catch {
+    renderDemoAsset(asset, now, "데모(대체)");
   }
 }
 

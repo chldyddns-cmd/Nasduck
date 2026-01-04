@@ -42,6 +42,7 @@ localStorage.setItem("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY");
 ```
 
 ## 데모 모드(샘플 데이터)
+- `index.html`: `ALPHAVANTAGE_API_KEY`가 없거나 호출이 실패하면 샘플 시세로 대시보드가 표시됩니다.
 - `Chart.html`: `ALPHAVANTAGE_API_KEY`가 없거나 호출이 실패하면 샘플 시계열 데이터로 차트/시뮬레이션이 동작합니다.
 - `AI Reco.html`: `OPENAI_API_KEY`가 없거나 호출이 실패하면 샘플 포트폴리오 결과를 로컬에서 생성해 표시합니다.
 - 강제로 데모를 켜려면: `AI%20Reco.html?demo=1`

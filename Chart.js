@@ -3,6 +3,72 @@ const API_KEY_STORAGE = "ALPHAVANTAGE_API_KEY";
 function getAlphaVantageKey() {
   return localStorage.getItem(API_KEY_STORAGE) || "";
 }
+
+function hashStringToUint32(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function seededRng(seedUint32) {
+  let state = seedUint32 >>> 0;
+  return function rand() {
+    state = (state + 0x6D2B79F5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function randn(rng) {
+  let u = 0, v = 0;
+  while (u === 0) u = rng();
+  while (v === 0) v = rng();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+function toISODate(d) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function generateSampleDailySeries(symbol, years = 5) {
+  const seed = hashStringToUint32(symbol.toUpperCase());
+  const rng = seededRng(seed);
+
+  const end = new Date();
+  end.setHours(0, 0, 0, 0);
+  const start = new Date(end);
+  start.setFullYear(end.getFullYear() - years);
+
+  const base = 80 + (seed % 120); // 80~199
+  const drift = 0.00025 + ((seed % 25) / 100000); // ~0.025%/day
+  const vol = 0.012 + ((seed % 10) / 1000); // 1.2%~2.1%/day
+
+  const dates = [];
+  const prices = [];
+  let price = base;
+
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const day = d.getDay();
+    if (day === 0 || day === 6) continue; // 주말 제외
+
+    const shock = randn(rng) * vol;
+    price = price * (1 + drift + shock);
+    if (!Number.isFinite(price) || price <= 1) price = Math.max(5, base);
+
+    dates.push(toISODate(d));
+    prices.push(Number(price.toFixed(2)));
+  }
+
+  return { dates, prices };
+}
 let chart, allDates = [], allPrices = [], currentSymbol = "", currentRange = "1y";
 
 const simState = {
@@ -11,28 +77,41 @@ const simState = {
   currentValueUSD: null,
   profitUSD: null,
   profitRatePct: null,
-  avgFx: null
+  avgFx: null,
+  avgFxIsDemo: false
 };
 
 // ====== Alpha Vantage 주가 불러오기 ======
 async function fetchData(symbol) {
   const apiKey = getAlphaVantageKey();
+
   if (!apiKey) {
-    alert("Alpha Vantage API 키가 없습니다. localStorage의 ALPHAVANTAGE_API_KEY에 키를 저장하세요.");
+    const sample = generateSampleDailySeries(symbol, 5);
+    allDates = sample.dates;
+    allPrices = sample.prices;
+    filterRange(currentRange);
+    alert("Alpha Vantage API 키가 없어 샘플(AI/포트폴리오용) 데이터를 표시합니다.");
     return;
   }
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${apiKey}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const key = Object.keys(data).find(k => k.toLowerCase().includes("time series"));
-  const ts = data[key];
-  if (!ts) {
-    alert("데이터를 가져올 수 없습니다.");
-    return;
+
+  try {
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=full&apikey=${apiKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const key = Object.keys(data).find(k => k.toLowerCase().includes("time series"));
+    const ts = data[key];
+    if (!ts) throw new Error("데이터 없음");
+
+    allDates = Object.keys(ts).sort();
+    allPrices = allDates.map(d => parseFloat(ts[d]["5. adjusted close"] || ts[d]["4. close"]));
+    filterRange(currentRange);
+  } catch {
+    const sample = generateSampleDailySeries(symbol, 5);
+    allDates = sample.dates;
+    allPrices = sample.prices;
+    filterRange(currentRange);
+    alert("실데이터를 가져오지 못해 샘플(AI/포트폴리오용) 데이터로 대체했습니다.");
   }
-  allDates = Object.keys(ts).sort();
-  allPrices = allDates.map(d => parseFloat(ts[d]["5. adjusted close"] || ts[d]["4. close"]));
-  filterRange(currentRange);
 }
 
 // ====== 차트 렌더링 ======
@@ -179,7 +258,11 @@ document.getElementById("investment-form").addEventListener("submit", (e) => {
 // ====== 평균 환율 계산 ======
 async function computeAverageFx(fxStartISO, fxEndISO) {
   const apiKey = getAlphaVantageKey();
-  if (!apiKey) throw new Error("Alpha Vantage API 키가 없습니다. localStorage의 ALPHAVANTAGE_API_KEY에 키를 저장하세요.");
+  if (!apiKey) {
+    simState.avgFxIsDemo = true;
+    return 1300;
+  }
+  simState.avgFxIsDemo = false;
 
   const url = `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=USD&to_symbol=KRW&outputsize=full&apikey=${apiKey}`;
   const res = await fetch(url);
@@ -204,7 +287,8 @@ document.getElementById("fx-btn").addEventListener("click", async () => {
   try {
     const avg = await computeAverageFx(s, e);
     simState.avgFx = avg;
-    document.getElementById("fx-result").textContent = `평균 환율: ${avg.toFixed(2)} KRW/USD`;
+    const suffix = simState.avgFxIsDemo ? " (데모)" : "";
+    document.getElementById("fx-result").textContent = `평균 환율: ${avg.toFixed(2)} KRW/USD${suffix}`;
     if (simState.totalInvestUSD !== null) applyFxToResult();
   } catch (err) {
     document.getElementById("fx-result").textContent = "평균 환율: 계산 실패";
